@@ -1,0 +1,161 @@
+/* global
+ *    createCanvas, background
+ *    colorMode, HSB
+ *    frameRate,
+ *    width, height, Box, Bird
+ *    rect,
+ *    stroke, noStroke, noFill
+ *    keyCode, UP_ARROW, LEFT_ARROW, RIGHT_ARROW, DOWN_ARROW
+ */
+// don't have to say Matter a lot in code
+const {
+  Engine, 
+  World, 
+  Bodies, 
+  MouseConstraint, 
+  Constraint,
+  Mouse
+  } = Matter;
+
+let ground;
+let targets = [];
+let bird;
+let world, engine;
+let mConstraint;
+let slingShot;
+
+// world is regarding to environment
+
+function setup() {
+  const canvas = createCanvas(400, 400);
+  engine = Matter.Engine.create();
+  world = engine.world;
+  
+  
+  // Box(x,y,w,h)
+  ground = new Ground(width/2, height-10, width, 20);
+  
+  // making multiple boxes/targets
+  for (let i = 0; i < 3; i++) {
+    targets[i] = new Box(300, 310-i*75, 30, 70);
+  }
+  
+  // Bird(x,y,r)
+  bird = new Bird(60, 300, 25);
+  
+  // slingShot = new SlingShot(50, 300, bird.body);
+  
+  // putting a constraint on Mouse
+  const mouse = Mouse.create(canvas.elt);
+  const options = {
+    mouse: mouse
+  }
+  mConstraint = Matter.MouseConstraint.create(engine);
+  World.add(world, mConstraint);
+}
+
+function draw() {
+  background(0);
+  Matter.Engine.update(engine);
+  ground.show();
+  bird.show();
+  // slingShot.show();
+  
+  // showing each box/target
+  for (let target of targets) {
+    target.show();
+  }
+}
+
+// BIRD.JS
+class Bird {
+  constructor(x, y, r) {
+    this.body = Matter.Bodies.circle(x,y,r)
+    Matter.World.add(world, this.body);
+    this.r = r;
+  } 
+  
+  show() {
+    const pos = this.body.position;
+    // asking Matter library to give an x/y
+    const angle = this.body.angle;
+    // angle of rectangle
+    push();
+    translate(pos.x, pos.y);
+    rotate(angle);
+    fill(255);
+    rectMode(CENTER);
+    circle(0, 0, this.r);
+    pop();
+  }
+}
+
+// BOX.JS
+class Box {
+  constructor(x, y, w, h) {
+    this.body = Matter.Bodies.rectangle(x,y,w,h);
+    Matter.World.add(world, this.body);
+    this.w = w;
+    this.h = h;
+    // will create rec body --> not going to have it's own x/y
+    
+  } 
+  
+  show() {
+    const pos = this.body.position;
+    // asking Matter library to give an x/y
+    const angle = this.body.angle;
+    // angle of rectangle
+    push();
+    translate(pos.x, pos.y);
+    rotate(angle);
+    fill(255);
+    rectMode(CENTER);
+    rect(0, 0, this.w, this.h);
+    pop();
+  }
+}
+
+// GROUND.JS
+class Ground extends Box {
+  constructor(x,y,w,h) {
+    super(x,y,w,h);
+    this.body.isStatic = true;
+  }
+}
+
+// Ground is a class that inherits everything from Box
+// Ground will be static and won't move
+
+// SLINGSHOT.JS
+
+class Slingshot {
+  constructor(x,y, body) {
+    
+    const options = {
+      pointA: {
+        x: x,
+        y: y,
+      },
+      bodyB: body;
+      
+      //stiffness is value of how stuff u want constraint to be 
+      // 1 - very stiff 0.2 - soft spring
+      stiffness: 0.5;
+      // length of spring
+      length: 20;
+      
+    }
+    
+    this.sling = Constraint.create(options);
+    World.add(world, this.sling);
+  }
+  
+  show() {
+    stroke(255);
+    const posA = this.sling.pointA;
+    const posB = this.sling.body.position;
+    line(posA.x, posA.y, posB.x, posB.y);
+  }
+  
+}
