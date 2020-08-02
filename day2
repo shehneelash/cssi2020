@@ -1,0 +1,130 @@
+/* ____    ___       _      _       ____  
+  / ___|  / _ \     / \    | |     / ___| 
+ | |  _  | | | |   / _ \   | |     \___ \ 
+ | |_| | | |_| |  / ___ \  | |___   ___) |
+  \____|  \___/  /_/   \_\ |_____| |____/ 
+                                               
+1) Make the DVD logo move
+2) Bounce
+3) Move and bounce diagonally
+4) Respond to canvas size
+
+  ____    _____   ____    _____   _____    ____   _   _ 
+ / ___|  |_   _| |  _ \  | ____| |_   _|  / ___| | | | |
+ \___ \    | |   | |_) | |  _|     | |   | |     | |_| |
+  ___) |   | |   |  _ <  | |___    | |   | |___  |  _  |
+ |____/    |_|   |_| \_\ |_____|   |_|    \____| |_| |_|
+
+4) Multiple logos
+5) At different speeds
+6) Change colors on bounce
+7) Random colors and speeds!
+8) Apply gravity to the logos and have that
+   govern their y-direction movement.
+
+*/
+
+
+// Name any p5.js functions we use in the global so Glitch can recognize them.
+/* global
+ *    background,
+ *    createCanvas,
+ *    image,
+      color,
+ *    loadImage,
+ */
+
+let dvdImage;
+let dvdImage2;
+let xPosition;
+let xPosition2;
+let yPosition2;
+// let yPosition;
+let xVelocity;
+
+function setup() {
+  // Code here runs only once
+
+  createCanvas(400, 400);
+  // We only want to load the logo once.
+  dvdImage = loadImage("https://cdn.glitch.com/eaea72a4-ac6d-4777-b76e-f37d75959aa5%2Fdvd.jpeg?1515761833387");
+  dvdImage2 = loadImage("https://cdn.glitch.com/eaea72a4-ac6d-4777-b76e-f37d75959aa5%2Fdvd.jpeg?1515761833387");
+  fill(180, 50, 100)
+  
+  
+  xPosition = 60;
+  xVelocity = 1;
+  yVelocity = 1;
+  yPosition = 60;
+  xPosition2 = 50;
+  yPosition2 = 50;
+  xVelocity2 = 2;
+  yVelocity2 = 2;
+}
+
+function draw() {
+  // Code here runs continuously
+  
+  background(220);
+  // Draw the logo at the new position.
+  image(dvdImage, xPosition, yPosition, 200, 150);
+  image(dvdImage2, xPosition2, yPosition2, 100, 100);
+  
+  // width of logo - edge of canvas
+  if (xPosition > 400 - 200)
+  {
+    xVelocity = -1; 
+    tint(random(255), random(255), random(255));
+  }
+  if (xPosition < 0)
+  {
+    xVelocity = 1;
+    tint(random(255), random(255), random(255));
+  }
+  xPosition += xVelocity;
+  
+  
+  // height of canvas - edge of image
+  if (yPosition > 400 - 150)
+  {
+    yVelocity = -1;
+    tint(random(255), random(255), random(255));
+  }
+  
+  if (yPosition < 0)
+  {
+    yVelocity = 1;
+    tint(random(255), random(255), random(255));
+  }
+  yPosition += yVelocity;
+  
+  
+//    if (xPosition2 > 400 - 100)
+//   {
+//     xVelocity2 = -2; 
+//     tint(random(255), random(255), random(255));
+//   }
+//   if (xPosition2 < 0)
+//   {
+//     xVelocity2 = 2;
+//     tint(random(255), random(255), random(255));
+//   }
+//   xPosition2 += xVelocity;
+  
+  
+//   // height of canvas - edge of image
+//   if (yPosition2 > 400 - 100)
+//   {
+//     yVelocity2 = -2;
+//     tint(random(255), random(255), random(255));
+//   }
+  
+//   if (yPosition2 < 0)
+//   {
+//     yVelocity2 = 2;
+//     tint(random(255), random(255), random(255));
+//   }
+//   yPosition2 += yVelocity2;
+  
+  
+}
