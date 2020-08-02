@@ -1,0 +1,119 @@
+/* ____    ___       _      _       ____  
+  / ___|  / _ \     / \    | |     / ___| 
+ | |  _  | | | |   / _ \   | |     \___ \ 
+ | |_| | | |_| |  / ___ \  | |___   ___) |
+  \____|  \___/  /_/   \_\ |_____| |____/ 
+                       
+Exploring some concepts, not creating a thing.
+
+  ____    _____   ____    _____   _____    ____   _   _ 
+ / ___|  |_   _| |  _ \  | ____| |_   _|  / ___| | | | |
+ \___ \    | |   | |_) | |  _|     | |   | |     | |_| |
+  ___) |   | |   |  _ <  | |___    | |   | |___  |  _  |
+ |____/    |_|   |_| \_\ |_____|   |_|    \____| |_| |_|
+
+The concepts in today's lesson could be used to make a dozen things,
+but here are some ideas if you need inspiration.
+
+1) A Marco Polo game, where you can click to see how far away you are
+   from the goal.
+2) Warmer, colder, where the background changes through many more shades
+   of red through green to show how close you are to a collectible.
+3) An art piece that changes hue based on the mouse position.
+4) An Operation style game, where you have to move from one side of the
+   screen to the other without stumbling over invisible objects.
+
+*/
+
+// Name any p5.js functions we use in the global so Glitch can recognize them.
+/* global
+ *    createCanvas
+ *    colorMode,
+ *    HSB,
+ *    background,
+ *    ellipse,
+ *    random,
+ *    rect,
+ *    width,
+ *    line,
+ *    text
+ *    mouseX,
+ *    mouseY
+ *    sqrt,
+ *    color,
+ *    round,
+ *    height,
+ */
+
+// any code below a 'return' will never happen - return stops program
+
+let backgroundColor, spherePosition, rectPosition, mousePosition;
+
+function setup() {
+  // Canvas & color settings
+  createCanvas(500, 400);
+  colorMode(HSB, 360, 100, 100);
+  backgroundColor = 95;
+  // This variable contains a JSON object
+  // "string": value
+  // put all related stuff together
+  spherePosition = {
+    "x": 100,
+    "y": 100
+  }
+  rectPosition = {
+    "x": 200,
+    "y": 200
+  }
+}
+
+function draw() {
+  background(backgroundColor);
+  ellipse(spherePosition.x, spherePosition.y, 20, 20);
+  rect(rectPosition.x, rectPosition.y, 20, 20);
+  line(spherePosition.x, spherePosition.y, rectPosition.x, rectPosition.y);
+  
+  // printCircleRectDistance();
+  // printCircleMouseDistance()
+  let rectCircleDistance = computeDistance(spherePosition, rectPosition);
+  text('The distance between the circle and the square is ' + rectCircleDistance, 10, 20);
+  
+  mousePosition = {
+    "x": mouseX,
+    "y": mouseY
+  }
+  
+  let circleMouseDistance = computeDistance(spherePosition, mousePosition);
+  text('The distance between the circle and the mouse is ' + circleMouseDistance, 10, 40)
+
+  printHotOrCold(circleMouseDistance);
+}
+
+function mousePressed() {
+  spherePosition.x = random(width);
+  spherePosition.y = random(height);
+}
+
+function computeDistance(point1, point2) {
+  // tells us distance between two points
+  let xDistance = point1.x - point2.x;
+  let yDistance = point1.y - point1.y;
+  let totalDistance = sqrt(xDistance * xDistance + yDistance * yDistance);
+  let roundedDistance = round(totalDistance);
+  return roundedDistance;
+}
+
+function printHotOrCold(circleMouseDistance) {
+  if (circleMouseDistance > 200) {
+    text("You're cold", 10, 60);
+    backgroundColor = color(240, 10, 100);
+  } 
+  else if (circleMouseDistance > 75) {
+    text("You're warm", 10, 60);
+    backgroundColor = color(120, 10, 100);
+  }
+  else {
+    text("You're hot", 10, 60);
+    backgroundColor = color(0, 10, 100);
+  }
+}
