@@ -1,0 +1,204 @@
+/* ____    ___       _      _       ____  
+  / ___|  / _ \     / \    | |     / ___| 
+ | |  _  | | | |   / _ \   | |     \___ \ 
+ | |_| | | |_| |  / ___ \  | |___   ___) |
+  \____|  \___/  /_/   \_\ |_____| |____/ 
+                       
+1) Make car move :)
+2) 2D Collision :)
+2) Setting / changing speed :)
+3) Changing lives :)
+4) Have the car reset after hit :)
+5) More cars
+6) Make frog start at an initial spot :)
+7) Make everything dissapear when game over
+
+  ____    _____   ____    _____   _____    ____   _   _ 
+ / ___|  |_   _| |  _ \  | ____| |_   _|  / ___| | | | |
+ \___ \    | |   | |_) | |  _|     | |   | |     | |_| |
+  ___) |   | |   |  _ <  | |___    | |   | |___  |  _  |
+ |____/    |_|   |_| \_\ |_____|   |_|    \____| |_| |_|
+
+1) Add multiple cars.
+2) Add a certain goal - i.e. score 5 times to end the game. :)
+3) Make it so that you can only move the frog if the game
+   is not over. :)
+4) Make the game get more and more challenging as you win
+   more and more times.
+5) Color code your player pieces.
+6) Using some ideas from yesterday’s game, add some
+   collectible power-ups that make you temporarily
+   invincible, faster, smaller, or rainbow-colored.
+7) Add features like a river to the background - make some
+   additional modifications to the gameplay - perhaps
+   falling into the river also sends you back. Add logs
+   that float.
+
+*/
+
+// Name any p5.js functions we use in the global so Glitch can recognize them.
+/* global
+ *    createCanvas, background
+ *    colorMode, HSB, fill
+ *    ellipse, rect
+ *    random
+ *    width, height
+ *    keyCode, UP_ARROW
+ *    text, textSize
+ */
+
+let backgroundColor, frogX, frogY, score, lives, gameIsOver, car1X, car1Y, car1V;
+let hitCar = false;
+let hitGoal = false;
+
+function setup() {
+  // Canvas & color settings
+  createCanvas(400, 300);
+  colorMode(HSB, 360, 100, 100);
+  backgroundColor = 95;
+  frogX = 200;
+  frogY = 270;
+  score = 0;
+  lives = 3;
+  gameIsOver = false;
+  car1X = 0;
+  car1Y = 100;
+  car1V = 5;
+  car2X = 350;
+  car2Y = 150;
+}
+
+function draw() {
+  background(backgroundColor);
+  // Code for gold goal line
+  fill(60, 80, 80);
+  rect(0, 0, width, 50);
+  // Code to display Frog
+  fill(120, 80, 80);
+  ellipse(frogX, frogY, 20);
+  moveCars();
+  drawCars();
+  checkCollisions();
+  checkWin();
+  displayScores();
+}
+
+function keyPressed() {
+  if (!gameIsOver)
+  {
+    if (keyCode === UP_ARROW) {
+      frogY -= 10;
+    }
+
+    if (keyCode == RIGHT_ARROW) {
+      frogX += 10;
+    }
+
+    if (keyCode == LEFT_ARROW) {
+      frogX -= 10;
+    }
+
+    if (keyCode == DOWN_ARROW) {
+      frogY += 10;
+    }
+  }
+}
+
+function moveCars() {
+  // Move the car
+  if (lives > 0)
+  {
+    car1X += 3;
+    car2X -= 2;
+  }
+  // Reset if it moves off screen
+  
+  if (car1X > 360)
+  {
+    car1X = 0;
+  }
+  
+  if (car2X < 0)
+  {
+    car2X = 350;
+  }
+
+}
+
+function drawCars() {
+  // Code for car 1
+  fill(0, 80, 80);
+  rect(car1X, car1Y, 40, 30);
+  // Code for additional cars
+  // haven't coded if collide w/ blue
+  // fill('blue');
+  // rect(car2X, car2Y, 40, 30);
+  
+}
+
+function checkCollisions() {
+  // If the frog collides with the car, reset the frog and subtract a life.
+  // collideRectCircle(x1, y1, width1, height1, cx, cy, diameter)
+  
+  hitCar = collideRectCircle(car1X,car1Y,40,30,frogX,frogY,20);
+  
+  if (hitCar)
+  {
+    lives--;
+    frogX = 200;
+    frogY = 270;
+  }
+  
+  // width = width of canvas; good to use in case you change canvas size
+  if (frogX > width)
+  {
+    frogX = 200;
+  }
+}
+
+function checkWin() {
+  // If the frog makes it into the yellow gold zone, increment the score
+  // and move the frog back down to the bottom.
+  
+  hitGoal = collideRectCircle(0,0,width,50,frogX,frogY,20);
+  
+  if (hitGoal)
+  {
+    score++;
+    frogX = 200;
+    frogY = 270;
+  }
+  
+}
+
+function displayScores() {
+  // Display Lives
+  textSize(14);
+  fill(0);
+  text(`Lives: ${lives}`, 10, 30);
+  
+  // Display Score
+  textSize(14);
+  fill(0);
+  text(`Score: ${score}`, 80, 30);
+  if (score == 5)
+  {
+    textSize(40);
+    textAlign('CENTER');
+    fill(0);
+    // Display Lives
+    text('You Win!', (width/2)-90, (height/2)+50);
+  }
+  
+  // Display game over message if the game is over
+  if (lives == 0)
+  {
+    textSize(40);
+    textAlign('CENTER');
+    fill(0);
+    // Display Lives
+    text('Game Over', (width/2)-90, (height/2)+50);
+    gameIsOver = true;
+  }
+
+}
